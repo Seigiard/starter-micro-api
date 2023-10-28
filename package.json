@@ -9,5 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "oura-cloud-api": "^2.0.1"
   }
 }
