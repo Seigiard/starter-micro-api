@@ -10,10 +10,23 @@ http
   .createServer(async function (req, res) {
     const client = new Client(accessToken);
 
-    const data = await client.getDailyReadiness({
-      start_date: getWeekAgoDate(),
-      end_date: getTodayDate(),
-    });
+    const dataDailyReadiness = getScoreByData(
+      await client.getDailyReadiness({
+        start_date: getWeekAgoDate(),
+        end_date: getTodayDate(),
+      }),
+      'readiness'
+    );
+
+    const dataDailySleep = getScoreByData(
+      await client.getDailySleep({
+        start_date: getWeekAgoDate(),
+        end_date: getTodayDate(),
+      }),
+      'sleep'
+    );
+
+    const data = mergeTwoObject(dataDailyReadiness, dataDailySleep);
 
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -47,4 +60,23 @@ function getWeekAgoDate() {
   var date = new Date();
   date.setDate(date.getDate() - 7);
   return date.toISOString().slice(0, 10);
+}
+
+function getScoreByData(data, key) {
+  return data.data
+    .map((item) => ({
+      day: item.day,
+      score: item.score,
+    }))
+    .reduce((acc, item) => {
+      acc[item.day] = { [key]: item.score };
+      return acc;
+    }, {});
+}
+
+function mergeTwoObject(obj1, obj2) {
+  return Object.keys(obj1).reduce((acc, item) => {
+    acc[item] = { ...obj1[item], ...obj2[item] };
+    return acc;
+  }, {});
 }
