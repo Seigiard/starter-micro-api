@@ -4,8 +4,8 @@ const { type } = require('os');
 const { getOuraData } = require('./src/oura.js');
 const { getRaindropData } = require('./src/raindrop.js');
 
-const ouraAccessToken = 'I5UAHQTSTW76DXV2R3GCDZBDNKXC6CQ6';
-const raindropAccessToken = '40d66e19-8250-4b23-b314-72d5ecbdf116';
+const ouraAccessToken = process.env.OURA_ACCESS_TOKEN;
+const raindropAccessToken = process.env.RAINDROP_ACCESS_TOKEN;
 
 const cacheFor = 60 * 60 * 1; // 1 hours
 
