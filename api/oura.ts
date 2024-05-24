@@ -4,6 +4,11 @@ const baseUrl = "https://api.ouraring.com/v2/usercollection/";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const accessToken = req.headers.authorization?.replace("Bearer ", "");
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).send('OK');
+  }
+
   if (!accessToken) {
     return res.status(401).json({ error: 'Missing access token' });
   }
