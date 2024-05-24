@@ -14,15 +14,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 async function getOuraData(accessToken: string) {
   const client = new OuraClient(accessToken);
 
-  const dailyReadinessRawData = await client.getDailyReadiness({
-    start_date: getWeekAgoDate(),
-    end_date: getTodayDate(),
-  });
+  const start_date = getWeekAgoDate();
+  const end_date = getTodayDate();
 
-  const dailySleepRawData = await client.getDailySleep({
-    start_date: getWeekAgoDate(),
-    end_date: getTodayDate(),
-  });
+  const [dailyReadinessRawData, dailySleepRawData] = await Promise.all([
+    client.getDailyReadiness({
+      start_date,
+      end_date,
+    }),
+    client.getDailySleep({
+      start_date,
+      end_date,
+    })
+  ]);
 
   const dataDailyReadiness = getScoreByData(dailyReadinessRawData, 'readiness');
 
